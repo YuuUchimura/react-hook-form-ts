@@ -210,7 +210,9 @@ function App() {
     register,
     handleSubmit,
     formState: { errors },
+    trigger,
   } = useForm<FormData>({
+    // defaultValues: { email: "john@test.com", password: "pass" },
     criteriaMode: "all",
   });
 
@@ -256,6 +258,9 @@ function App() {
           )}
         </div>
         <button type="submit">ログイン</button>
+        <button type="button" onClick={() => trigger("password")}>
+          バリデーション
+        </button>
       </form>
     </div>
   );
