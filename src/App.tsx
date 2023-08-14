@@ -162,9 +162,43 @@
 
 // export default App;
 
-import { useRef, useState } from "react";
+// import { useRef, useState } from "react";
+// import "./App.css";
+// import { SubmitHandler, useForm } from "react-hook-form";
+
+// type FormData = {
+//   email: string;
+//   password: string;
+// };
+
+// function App() {
+//   const { register, handleSubmit } = useForm<FormData>();
+
+//   const onSubmit: SubmitHandler<FormData> = (data) => console.log(data);
+
+//   console.log("再レンダリング");
+//   return (
+//     <div className="App">
+//       <h1>ログイン</h1>
+//       <form onSubmit={handleSubmit(onSubmit)}>
+//         <div>
+//           <label htmlFor="email">Email</label>
+//           <input id="email" {...register("email", { required: true })} />
+//         </div>
+//         <div>
+//           <label htmlFor="password">Password</label>
+//           <input id="password" {...register("password")} type="password" />
+//         </div>
+//         <button type="submit">ログイン</button>
+//       </form>
+//     </div>
+//   );
+// }
+
+// export default App;
+
 import "./App.css";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 type FormData = {
   email: string;
@@ -172,42 +206,54 @@ type FormData = {
 };
 
 function App() {
-  const { register, handleSubmit } = useForm<FormData>();
-  const { name, ref, onChange, onBlur } = register("email");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    criteriaMode: "all",
+  });
 
-  const [state, setState] = useState<FormData>();
-  const email = useRef("");
-  let states: FormData = { email: "", password: "" };
+  const onSubmit = handleSubmit((data) => console.log(data));
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    setState(data);
-    console.log({ states });
-    console.log({ email });
-    states = { email: data.email, password: data.password };
-    email.current = data.email;
-    console.log({ state });
-    console.log({ states });
-    console.log({ email: email.current });
-    console.log(data);
-  };
-  console.log("再レンダリング");
   return (
     <div className="App">
       <h1>ログイン</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={onSubmit}>
         <div>
           <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            name={name}
-            onChange={onChange}
-            onBlur={onBlur}
-            ref={ref}
-          />
+          <input id="email" {...register("email", { required: true })} />
+          {errors.email && <div>入力が必須の項目です</div>}
         </div>
         <div>
           <label htmlFor="password">Password</label>
-          <input id="password" {...register("password")} type="password" />
+          <input
+            id="password"
+            {...register("password", {
+              required: {
+                value: true,
+                message: "入力が必須の項目です。",
+              },
+              pattern: {
+                value: /^[A-Za-z]+$/,
+                message: "アルファベットのみ入力してください。",
+              },
+              minLength: {
+                value: 8,
+                message: "8文字以上入力してください。",
+              },
+            })}
+            type="password"
+          />
+          {errors.password?.types?.required && (
+            <div>{errors.password.types.required}</div>
+          )}
+          {errors.password?.types?.pattern && (
+            <div>{errors.password.types.pattern}</div>
+          )}
+          {errors.password?.types?.minLength && (
+            <div>8文字以上入力してください。</div>
+          )}
         </div>
         <button type="submit">ログイン</button>
       </form>
