@@ -197,6 +197,7 @@
 
 // export default App;
 
+import { useEffect } from "react";
 import "./App.css";
 import { useForm } from "react-hook-form";
 
@@ -209,6 +210,7 @@ function App() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: {
       isDirty,
       dirtyFields,
@@ -218,6 +220,7 @@ function App() {
       submitCount,
       isSubmitted,
       isSubmitting,
+      isSubmitSuccessful,
     },
     trigger,
   } = useForm<FormData>({
@@ -227,9 +230,40 @@ function App() {
   console.log(submitCount);
 
   const onSubmit = handleSubmit(async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
     console.log(data);
+    reset(
+      {
+        email: "",
+        password: "",
+      },
+      {
+        keepSubmitCount: false,
+        keepIsSubmitted: false,
+        keepTouched: true,
+      }
+    );
   });
+
+  const handleReset = () => {
+    reset({
+      email: "",
+      password: "",
+    });
+  };
+
+  useEffect(() => {
+    reset(
+      {
+        email: "",
+        password: "",
+      },
+      {
+        keepSubmitCount: true,
+        keepIsSubmitted: true,
+        keepTouched: true,
+      }
+    );
+  }, [isSubmitSuccessful]);
 
   return (
     <div className="App">
@@ -270,17 +304,15 @@ function App() {
             <div>8文字以上入力してください。</div>
           )}
         </div>
-        <div>
-          <strong> submitCount : </strong> {JSON.stringify(submitCount)}
-        </div>
-        <div>
-          <strong> isSubmitted : </strong> {JSON.stringify(isSubmitted)}
-        </div>
-        <div>
-          <strong> isSubmitting : </strong> {JSON.stringify(isSubmitting)}
-        </div>
-        <button type="submit" disabled={!isDirty}>
-          ログイン
+        <div>isValid : {JSON.stringify(isValid)}</div>
+        <div>isDirty : {JSON.stringify(isDirty)}</div>
+        <div>submitCount : {JSON.stringify(submitCount)}</div>
+        <div>isSubmitted : {JSON.stringify(isSubmitted)}</div>
+        <div>touchedFields : {JSON.stringify(touchedFields)}</div>
+
+        <button type="submit">Login</button>
+        <button type="reset" onClick={handleReset}>
+          Reset
         </button>
         <button type="button" onClick={() => trigger("password")}>
           バリデーション
