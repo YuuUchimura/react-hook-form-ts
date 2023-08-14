@@ -197,7 +197,133 @@
 
 // export default App;
 
-import { useEffect } from "react";
+// import { useEffect } from "react";
+// import "./App.css";
+// import { useForm } from "react-hook-form";
+
+// type FormData = {
+//   email: string;
+//   password: string;
+// };
+
+// function App() {
+//   const {
+//     register,
+//     handleSubmit,
+//     reset,
+//     formState: {
+//       isDirty,
+//       dirtyFields,
+//       errors,
+//       touchedFields,
+//       isValid,
+//       submitCount,
+//       isSubmitted,
+//       isSubmitting,
+//       isSubmitSuccessful,
+//     },
+//     trigger,
+//   } = useForm<FormData>({
+//     defaultValues: { email: "", password: "" },
+//     criteriaMode: "all",
+//   });
+//   console.log(submitCount);
+
+//   const onSubmit = handleSubmit(async (data) => {
+//     console.log(data);
+//     reset(
+//       {
+//         email: "",
+//         password: "",
+//       },
+//       {
+//         keepSubmitCount: false,
+//         keepIsSubmitted: false,
+//         keepTouched: true,
+//       }
+//     );
+//   });
+
+//   const handleReset = () => {
+//     reset({
+//       email: "",
+//       password: "",
+//     });
+//   };
+
+//   useEffect(() => {
+//     reset(
+//       {
+//         email: "",
+//         password: "",
+//       },
+//       {
+//         keepSubmitCount: true,
+//         keepIsSubmitted: true,
+//         keepTouched: true,
+//       }
+//     );
+//   }, [isSubmitSuccessful]);
+
+//   return (
+//     <div className="App">
+//       <h1>ログイン</h1>
+//       <form onSubmit={onSubmit}>
+//         <div>
+//           <label htmlFor="email">Email</label>
+//           <input id="email" {...register("email", { required: true })} />
+//           {errors.email && <div>入力が必須の項目です</div>}
+//         </div>
+//         <div>
+//           <label htmlFor="password">Password</label>
+//           <input
+//             id="password"
+//             {...register("password", {
+//               required: {
+//                 value: true,
+//                 message: "入力が必須の項目です。",
+//               },
+//               pattern: {
+//                 value: /^[A-Za-z]+$/,
+//                 message: "アルファベットのみ入力してください。",
+//               },
+//               minLength: {
+//                 value: 8,
+//                 message: "8文字以上入力してください。",
+//               },
+//             })}
+//             type="password"
+//           />
+//           {errors.password?.types?.required && (
+//             <div>{errors.password.types.required}</div>
+//           )}
+//           {errors.password?.types?.pattern && (
+//             <div>{errors.password.types.pattern}</div>
+//           )}
+//           {errors.password?.types?.minLength && (
+//             <div>8文字以上入力してください。</div>
+//           )}
+//         </div>
+//         <div>isValid : {JSON.stringify(isValid)}</div>
+//         <div>isDirty : {JSON.stringify(isDirty)}</div>
+//         <div>submitCount : {JSON.stringify(submitCount)}</div>
+//         <div>isSubmitted : {JSON.stringify(isSubmitted)}</div>
+//         <div>touchedFields : {JSON.stringify(touchedFields)}</div>
+
+//         <button type="submit">Login</button>
+//         <button type="reset" onClick={handleReset}>
+//           Reset
+//         </button>
+//         <button type="button" onClick={() => trigger("password")}>
+//           バリデーション
+//         </button>
+//       </form>
+//     </div>
+//   );
+// }
+
+// export default App;
+
 import "./App.css";
 import { useForm } from "react-hook-form";
 
@@ -210,60 +336,38 @@ function App() {
   const {
     register,
     handleSubmit,
-    reset,
-    formState: {
-      isDirty,
-      dirtyFields,
-      errors,
-      touchedFields,
-      isValid,
-      submitCount,
-      isSubmitted,
-      isSubmitting,
-      isSubmitSuccessful,
-    },
-    trigger,
+    setError,
+    formState: { errors },
   } = useForm<FormData>({
     defaultValues: { email: "", password: "" },
-    criteriaMode: "all",
-  });
-  console.log(submitCount);
-
-  const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
-    reset(
-      {
-        email: "",
-        password: "",
-      },
-      {
-        keepSubmitCount: false,
-        keepIsSubmitted: false,
-        keepTouched: true,
-      }
-    );
   });
 
-  const handleReset = () => {
-    reset({
-      email: "",
-      password: "",
-    });
-  };
+  // const onSubmit = handleSubmit((data) => {
+  //   try {
+  //     console.log(data);
+  //     throw new Error("エラーが発生しています。");
+  //   } catch (error: any) {
+  //     setError("email", {
+  //       type: "server",
+  //       message: error.message,
+  //     });
+  //     console.log(error.message);
+  //   }
+  // });
+  // console.log(errors.email);
 
-  useEffect(() => {
-    reset(
-      {
-        email: "",
-        password: "",
-      },
-      {
-        keepSubmitCount: true,
-        keepIsSubmitted: true,
-        keepTouched: true,
-      }
-    );
-  }, [isSubmitSuccessful]);
+  const onSubmit = handleSubmit((data) => {
+    try {
+      throw new Error("エラーが発生しています。");
+      console.log(data);
+    } catch (error: any) {
+      setError("root.server", {
+        type: "server",
+        message: error.message,
+      });
+      console.log(error.message);
+    }
+  });
 
   return (
     <div className="App">
@@ -271,52 +375,23 @@ function App() {
       <form onSubmit={onSubmit}>
         <div>
           <label htmlFor="email">Email</label>
-          <input id="email" {...register("email", { required: true })} />
-          {errors.email && <div>入力が必須の項目です</div>}
+          <input
+            id="email"
+            {...register("email", { required: "入力が必須の項目です。" })}
+          />
+          {errors.email?.message && <div>{errors.email.message}</div>}
         </div>
         <div>
           <label htmlFor="password">Password</label>
           <input
             id="password"
-            {...register("password", {
-              required: {
-                value: true,
-                message: "入力が必須の項目です。",
-              },
-              pattern: {
-                value: /^[A-Za-z]+$/,
-                message: "アルファベットのみ入力してください。",
-              },
-              minLength: {
-                value: 8,
-                message: "8文字以上入力してください。",
-              },
-            })}
+            {...register("password", { required: "入力が必須の項目です。" })}
             type="password"
           />
-          {errors.password?.types?.required && (
-            <div>{errors.password.types.required}</div>
-          )}
-          {errors.password?.types?.pattern && (
-            <div>{errors.password.types.pattern}</div>
-          )}
-          {errors.password?.types?.minLength && (
-            <div>8文字以上入力してください。</div>
-          )}
+          {errors.password?.message && <div>{errors.password.message}</div>}
         </div>
-        <div>isValid : {JSON.stringify(isValid)}</div>
-        <div>isDirty : {JSON.stringify(isDirty)}</div>
-        <div>submitCount : {JSON.stringify(submitCount)}</div>
-        <div>isSubmitted : {JSON.stringify(isSubmitted)}</div>
-        <div>touchedFields : {JSON.stringify(touchedFields)}</div>
 
         <button type="submit">Login</button>
-        <button type="reset" onClick={handleReset}>
-          Reset
-        </button>
-        <button type="button" onClick={() => trigger("password")}>
-          バリデーション
-        </button>
       </form>
     </div>
   );
