@@ -324,77 +324,80 @@
 
 // export default App;
 
-import "./App.css";
-import { useForm } from "react-hook-form";
+// import "./App.css";
+// import { useForm } from "react-hook-form";
 
-type FormData = {
-  email: string;
-  password: string;
-};
+// type FormData = {
+//   email: string;
+//   password: string;
+// };
 
-function App() {
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors },
-  } = useForm<FormData>({
-    defaultValues: { email: "", password: "" },
-  });
+// function App() {
+//   const {
+//     register,
+//     handleSubmit,
+//     setError,
+//     getValues,
+//     watch,
+//     formState: { errors },
+//   } = useForm<FormData>({
+//     defaultValues: { email: "", password: "" },
+//   });
 
-  // const onSubmit = handleSubmit((data) => {
-  //   try {
-  //     console.log(data);
-  //     throw new Error("エラーが発生しています。");
-  //   } catch (error: any) {
-  //     setError("email", {
-  //       type: "server",
-  //       message: error.message,
-  //     });
-  //     console.log(error.message);
-  //   }
-  // });
-  // console.log(errors.email);
+//   // const onSubmit = handleSubmit((data) => {
+//   //   try {
+//   //     console.log(data);
+//   //     throw new Error("エラーが発生しています。");
+//   //   } catch (error: any) {
+//   //     setError("email", {
+//   //       type: "server",
+//   //       message: error.message,
+//   //     });
+//   //     console.log(error.message);
+//   //   }
+//   // });
+//   // console.log(errors.email);
 
-  const onSubmit = handleSubmit((data) => {
-    try {
-      throw new Error("エラーが発生しています。");
-      console.log(data);
-    } catch (error: any) {
-      setError("root.server", {
-        type: "server",
-        message: error.message,
-      });
-      console.log(error.message);
-    }
-  });
+//   const onSubmit = handleSubmit((data) => {
+//     try {
+//       throw new Error("エラーが発生しています。");
+//       console.log(data);
+//     } catch (error: any) {
+//       setError("root.server", {
+//         type: "server",
+//         message: error.message,
+//       });
+//       console.log(error.message);
+//     }
+//   });
 
-  return (
-    <div className="App">
-      <h1>ログイン</h1>
-      <form onSubmit={onSubmit}>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            {...register("email", { required: "入力が必須の項目です。" })}
-          />
-          {errors.email?.message && <div>{errors.email.message}</div>}
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            {...register("password", { required: "入力が必須の項目です。" })}
-            type="password"
-          />
-          {errors.password?.message && <div>{errors.password.message}</div>}
-        </div>
+//   return (
+//     <div className="App">
+//       <h1>ログイン</h1>
+//       <form onSubmit={onSubmit}>
+//         <div>
+//           <label htmlFor="email">Email</label>
+//           <input
+//             id="email"
+//             {...register("email", { required: "入力が必須の項目です。" })}
+//           />
+//           {errors.email?.message && <div>{errors.email.message}</div>}
+//         </div>
+//         <div>
+//           <label htmlFor="password">Password</label>
+//           <input
+//             id="password"
+//             {...register("password", { required: "入力が必須の項目です。" })}
+//             type="password"
+//           />
+//           {errors.password?.message && <div>{errors.password.message}</div>}
+//         </div>
+//         <div>getValues{getValues("email")}</div>
+//         <div>watch{watch("email")}</div>
+//         <button type="submit">Login</button>
+//       </form>
+//     </div>
+//   );
+// }
 
-        <button type="submit">Login</button>
-      </form>
-    </div>
-  );
-}
-
-export default App;
+// export default App;
