@@ -209,14 +209,27 @@ function App() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: {
+      isDirty,
+      dirtyFields,
+      errors,
+      touchedFields,
+      isValid,
+      submitCount,
+      isSubmitted,
+      isSubmitting,
+    },
     trigger,
   } = useForm<FormData>({
-    // defaultValues: { email: "john@test.com", password: "pass" },
+    defaultValues: { email: "", password: "" },
     criteriaMode: "all",
   });
+  console.log(submitCount);
 
-  const onSubmit = handleSubmit((data) => console.log(data));
+  const onSubmit = handleSubmit(async (data) => {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    console.log(data);
+  });
 
   return (
     <div className="App">
@@ -257,7 +270,18 @@ function App() {
             <div>8文字以上入力してください。</div>
           )}
         </div>
-        <button type="submit">ログイン</button>
+        <div>
+          <strong> submitCount : </strong> {JSON.stringify(submitCount)}
+        </div>
+        <div>
+          <strong> isSubmitted : </strong> {JSON.stringify(isSubmitted)}
+        </div>
+        <div>
+          <strong> isSubmitting : </strong> {JSON.stringify(isSubmitting)}
+        </div>
+        <button type="submit" disabled={!isDirty}>
+          ログイン
+        </button>
         <button type="button" onClick={() => trigger("password")}>
           バリデーション
         </button>
