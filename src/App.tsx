@@ -401,3 +401,47 @@
 // }
 
 // export default App;
+
+import "./App.css";
+import { useForm } from "react-hook-form";
+
+type formData = {
+  showAge: boolean;
+  age: string;
+};
+
+const App = () => {
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<formData>();
+
+  const watchShowAge = watch("showAge", false);
+
+  const onSubmit = handleSubmit((data) => console.log(data));
+
+  return (
+    <div className="App">
+      <form onSubmit={onSubmit}>
+        <div>
+          <input type="checkbox" {...register("showAge")} />
+        </div>
+
+        {watchShowAge && (
+          <div>
+            <input type="number" {...register("age", { min: 50 })} />
+            {errors.age && <div>50以上を入力してください</div>}
+          </div>
+        )}
+
+        <div>
+          <button type="submit">送信</button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default App;
