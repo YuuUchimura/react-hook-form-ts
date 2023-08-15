@@ -402,46 +402,95 @@
 
 // export default App;
 
+// import "./App.css";
+// import { useForm } from "react-hook-form";
+// import * as z from "zod";
+
+// type formData = {
+//   showAge: boolean;
+//   age: string;
+// };
+
+// const App = () => {
+//   const {
+//     register,
+//     watch,
+//     handleSubmit,
+//     formState: { errors },
+//   } = useForm<formData>();
+
+//   const watchShowAge = watch("showAge", false);
+
+//   const onSubmit = handleSubmit((data) => console.log(data));
+
+//   return (
+//     <div className="App">
+//       <form onSubmit={onSubmit}>
+//         <div>
+//           <input type="checkbox" {...register("showAge")} />
+//         </div>
+
+//         {watchShowAge && (
+//           <div>
+//             <input type="number" {...register("age", { min: 50 })} />
+//             {errors.age && <div>50以上を入力してください</div>}
+//           </div>
+//         )}
+
+//         <div>
+//           <button type="submit">送信</button>
+//         </div>
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default App;
+
 import "./App.css";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
-type formData = {
-  showAge: boolean;
-  age: string;
-};
+const loginSchema = z.object({
+  email: z
+    .string()
+    .email({ message: "メールアドレスの形式ではありません。" })
+    .min(1, { message: "1文字以上入力する必要があります。" }),
+  password: z.string().min(1, { message: "1文字以上入力する必要があります。" }),
+});
 
-const App = () => {
+type Login = z.infer<typeof loginSchema>;
+
+function App() {
   const {
     register,
-    watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<formData>();
-
-  const watchShowAge = watch("showAge", false);
+  } = useForm<Login>({
+    resolver: zodResolver(loginSchema),
+  });
 
   const onSubmit = handleSubmit((data) => console.log(data));
-
+  console.log(errors);
   return (
     <div className="App">
+      <h1>ログイン</h1>
       <form onSubmit={onSubmit}>
         <div>
-          <input type="checkbox" {...register("showAge")} />
+          <label htmlFor="email">Email</label>
+          <input id="email" {...register("email", { required: true })} />
+          <p>{errors.email?.message}</p>
         </div>
-
-        {watchShowAge && (
-          <div>
-            <input type="number" {...register("age", { min: 50 })} />
-            {errors.age && <div>50以上を入力してください</div>}
-          </div>
-        )}
-
         <div>
-          <button type="submit">送信</button>
+          <label htmlFor="password">Password</label>
+          <input id="password" {...register("password")} type="password" />
+          <p>{errors.password?.message}</p>
         </div>
+        <button type="submit">ログイン</button>
       </form>
     </div>
   );
-};
+}
 
 export default App;
